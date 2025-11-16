@@ -11,6 +11,98 @@
     <script src="https://cdn.tailwindcss.com"></script>
 
     <style>
+      /* === animation helpers === */
+      :root {
+        --rev-duration: 700ms;
+        --rev-ease: cubic-bezier(0.2, 0.9, 0.3, 1);
+      }
+
+      /* reduced motion */
+      @media (prefers-reduced-motion: reduce) {
+        .reveal,
+        .reveal-in-view,
+        .hero-landing,
+        .bg-zoom {
+          transition: none !important;
+          animation: none !important;
+          transform: none !important;
+          opacity: 1 !important;
+        }
+      }
+
+      /* initial hidden state for scroll reveals */
+      .reveal {
+        opacity: 0;
+        transform: translateY(20px);
+        transition: opacity var(--rev-duration) var(--rev-ease),
+          transform var(--rev-duration) var(--rev-ease);
+        will-change: transform, opacity;
+      }
+
+      /* visible state after intersection */
+      .reveal.in-view {
+        opacity: 1;
+        transform: translateY(0);
+      }
+
+      /* small scale-up + fade for hero landing (page load) */
+      .hero-landing {
+        opacity: 0;
+        transform: translateY(8px) scale(0.995);
+        transition: transform 900ms cubic-bezier(0.16, 0.84, 0.24, 1),
+          opacity 700ms cubic-bezier(0.16, 0.84, 0.24, 1);
+        will-change: transform, opacity;
+      }
+      .hero-landing.loaded {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+      }
+
+      /* stagger helper for children */
+      .stagger > * {
+        opacity: 0;
+        transform: translateY(10px);
+        transition: opacity 600ms var(--rev-ease),
+          transform 600ms var(--rev-ease);
+      }
+      .stagger.in-view > * {
+        opacity: 1;
+        transform: translateY(0);
+      }
+      /* small stagger delays (JS sets inline style delays) */
+
+      /* zoom effect for background images on hover/when exposed */
+      .bg-zoom {
+        transition: transform 900ms var(--rev-ease);
+        transform-origin: center center;
+        will-change: transform;
+      }
+      .bg-zoom.zoomed {
+        transform: scale(1.06);
+      }
+
+      /* subtle slide-left reveal for hero headline word highlight (optional) */
+      .hero-words .word {
+        display: inline-block;
+        opacity: 0;
+        transform: translateY(6px);
+        transition: opacity 650ms var(--rev-ease),
+          transform 650ms var(--rev-ease);
+      }
+      .hero-words.animated .word {
+        opacity: 1;
+        transform: translateY(0);
+      }
+
+      /* focus-visible helper for keyboard users */
+      a:focus-visible,
+      button:focus-visible {
+        outline: 3px solid rgba(240, 196, 76, 0.18);
+        outline-offset: 3px;
+      }
+    </style>
+
+    <style>
       /* small helpers only — no design changes */
       :root {
         --brand-yellow: #f0c44c;
@@ -489,9 +581,9 @@
     </section>
 
     <!-- Interactive 3-card CTA strip - responsive -->
-    <section class="mt-8">
-      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 items-stretch">
+    <section>
+      <div class="w-full h-full">
+        <div class="grid grid-cols-1 md:grid-cols-3 items-stretch">
           <!-- card 1 -->
           <div
             class="group relative h-[420px] w-full overflow-hidden shadow-lg"
@@ -502,7 +594,7 @@
               class="absolute inset-0 w-full h-full object-cover transition-transform duration-700 ease-out transform group-hover:scale-105 grayscale"
             />
             <div
-              class="absolute inset-0 bg-black/55 mix-blend-multiply transition-opacity duration-500 group-hover:bg-black/40"
+              class="absolute inset-0 bg-black/20 mix-blend-multiply transition-opacity duration-500 group-hover:bg-black/40"
             ></div>
             <div
               class="relative z-10 h-full px-6 flex flex-col items-center justify-center text-center text-white"
@@ -589,7 +681,7 @@
               class="absolute inset-0 w-full h-full object-cover transition-transform duration-700 ease-out transform group-hover:scale-105 grayscale"
             />
             <div
-              class="absolute inset-0 bg-black/55 mix-blend-multiply transition-opacity duration-500 group-hover:bg-black/40"
+              class="absolute inset-0 bg-black/20 mix-blend-multiply transition-opacity duration-500 group-hover:bg-black/40"
             ></div>
             <div
               class="relative z-10 h-full px-6 flex flex-col items-center justify-center text-center text-white"
@@ -671,7 +763,7 @@
               class="absolute inset-0 w-full h-full object-cover transition-transform duration-700 ease-out transform group-hover:scale-105 grayscale"
             />
             <div
-              class="absolute inset-0 bg-black/55 mix-blend-multiply transition-opacity duration-500 group-hover:bg-black/40"
+              class="absolute inset-0 bg-black/20 mix-blend-multiply transition-opacity duration-500 group-hover:bg-black/40"
             ></div>
             <div
               class="relative z-10 h-full px-6 flex flex-col items-center justify-center text-center text-white"
@@ -852,9 +944,11 @@
       <img
         src="./assets/images/classroom.png"
         alt="classroom"
-        class="w-full h-[40vh] md:h-[55vh] lg:h-[70vh] object-cover"
+        class="h-full w-full object-cover"
       />
-      <div class="absolute top-0 left-0 w-full h-20 classroom-top-fade"></div>
+      <div
+        class="absolute top-0 left-0 w-full h-[10%] bg-gradient-to-b from-white to-transparent pointer-events-none"
+      ></div>
     </section>
 
     <!-- FOOTER -->
@@ -968,6 +1062,153 @@
         </div>
       </div>
     </footer>
+
+    <script>
+      (function () {
+        // Respect reduced motion
+        const reduceMotion = window.matchMedia(
+          "(prefers-reduced-motion: reduce)"
+        ).matches;
+        if (reduceMotion) {
+          document.documentElement.classList.add("reduce-motion");
+        }
+
+        /* ---------- HERO LANDING ---------- */
+        // Targets inside your hero: .max-w-5xl (content wrapper), headline/sub/cta
+        const heroContent =
+          document.querySelector("#hero .max-w-5xl") ||
+          document.querySelector("#hero .max-w-7xl") ||
+          document.querySelector("#hero");
+
+        function heroLanding() {
+          if (!heroContent || reduceMotion) return;
+          // add hero-landing class then .loaded after a small delay for entrance
+          heroContent.classList.add("hero-landing");
+
+          // also stagger children for nicer effect (headline / sub / cta)
+          const staggerParent =
+            heroContent.querySelector(".stagger") || heroContent;
+          // ensure child elements are ready
+          const children = Array.from(staggerParent.children).slice(0, 6);
+
+          // set slight stagger delays
+          children.forEach((ch, i) => {
+            ch.style.transitionDelay = `${i * 80 + 120}ms`;
+          });
+
+          // trigger paint on next frame then add loaded class
+          requestAnimationFrame(() => {
+            // small timeout to let CSS apply initial state reliably
+            setTimeout(() => {
+              heroContent.classList.add("loaded");
+              // animate hero headline words if present
+              const heroWords = heroContent.querySelector(".hero-words");
+              if (heroWords) {
+                setTimeout(() => heroWords.classList.add("animated"), 350);
+              }
+            }, 60);
+          });
+        }
+
+        /* ---------- SCROLL REVEAL ---------- */
+        // Which elements to reveal by default (safe selectors used for your layout)
+        const defaultRevealSelectors = [
+          "section", // entire sections
+          ".reveal-card", // optional class for cards
+          "article", // volunteer / feature cards
+          ".group", // interactive CTA groups
+          ".rounded-2xl", // category cards
+          ".max-w-7xl > .grid", // big grids
+          ".grid > .relative", // direct grid children
+          ".stagger", // containers with multiple children
+        ];
+
+        // Build list of unique elements currently in DOM
+        const revealElements = new Set();
+        defaultRevealSelectors.forEach((sel) => {
+          document
+            .querySelectorAll(sel)
+            .forEach((el) => revealElements.add(el));
+        });
+
+        // Remove header/hero wrapper itself so first visible content stays natural
+        const heroSection = document.getElementById("hero");
+        if (heroSection) revealElements.delete(heroSection);
+
+        // Convert to array and apply .reveal class
+        const revealArray = Array.from(revealElements).filter(Boolean);
+        revealArray.forEach((el) => {
+          // skip tiny elements (avoid overlay nodes)
+          if (el.offsetHeight === 0 && el.tagName !== "SECTION") return;
+          if (!el.classList.contains("reveal")) el.classList.add("reveal");
+        });
+
+        if (!reduceMotion && "IntersectionObserver" in window) {
+          const io = new IntersectionObserver(
+            (entries, obs) => {
+              for (const entry of entries) {
+                if (entry.isIntersecting) {
+                  const el = entry.target;
+                  el.classList.add("in-view");
+
+                  // if element contains background image(s), zoom them slightly
+                  el.querySelectorAll("img, .bg-zoom").forEach((img) => {
+                    // use 'bg-zoom' class for images you want to scale on reveal
+                    if (
+                      img.classList.contains("bg-zoom") ||
+                      img.tagName === "IMG"
+                    ) {
+                      img.classList.add("zoomed");
+                    }
+                  });
+
+                  // if element has "stagger" children, cascade small delays
+                  if (el.classList.contains("stagger")) {
+                    Array.from(el.children).forEach((ch, idx) => {
+                      ch.style.transitionDelay = `${idx * 80}ms`;
+                    });
+                  }
+
+                  obs.unobserve(el); // reveal once
+                }
+              }
+            },
+            {
+              root: null,
+              rootMargin: "0px 0px -10% 0px", // trigger slightly before full appearance
+              threshold: 0.12,
+            }
+          );
+
+          revealArray.forEach((el) => io.observe(el));
+        } else {
+          // fallback: simply show them immediately
+          revealArray.forEach((el) => el.classList.add("in-view"));
+        }
+
+        /* ---------- hover-friendly background zoom for interactive cards ---------- */
+        // Add class to card images so JS can toggle 'zoomed' on reveal
+        document
+          .querySelectorAll(".group img, .group .object-cover")
+          .forEach((img) => {
+            img.classList.add("bg-zoom");
+          });
+
+        /* ---------- keyboard accessible focus reveal (optional) ---------- */
+        document.addEventListener("keydown", (e) => {
+          if (e.key === "Tab") {
+            document.documentElement.classList.add("user-is-tabbing");
+          }
+        });
+
+        /* ---------- run on DOM ready ---------- */
+        if (document.readyState === "loading") {
+          document.addEventListener("DOMContentLoaded", heroLanding);
+        } else {
+          heroLanding();
+        }
+      })();
+    </script>
 
     <script>
       // Mobile menu toggle (keeps original structure)
