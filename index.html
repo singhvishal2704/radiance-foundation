@@ -9,60 +9,75 @@
       rel="stylesheet"
     />
     <script src="https://cdn.tailwindcss.com"></script>
+
     <style>
-      /* Custom small adjustments to match the design */
-      @layer utilities {
-        .hero-overlay {
-          background: linear-gradient(
-            90deg,
-            rgba(0, 0, 0, 0.45),
-            rgba(0, 0, 0, 0.3)
-          );
-        }
+      /* small helpers only — no design changes */
+      :root {
+        --brand-yellow: #f0c44c;
+        --dark-navy: #0b1020;
       }
-      /* Fonts: using system fonts for portability; replace with your brand fonts if you have them */
-      body {
-        font-family: Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI",
+
+      /* keep large headings responsive but unchanged visually */
+      #hero h1 {
+        font-family: "Poppins", Inter, system-ui, -apple-system, "Segoe UI",
           Roboto, "Helvetica Neue", Arial;
+        /* fallback size for older browsers */
       }
-      /* keep large headings from overflowing on extremely small viewports */
+
+      /* prevent overflow on very small screens */
       @media (max-width: 420px) {
         #hero h1 {
           font-size: 44px !important;
+          line-height: 0.95 !important;
         }
         #hero h2 {
           font-size: 30px !important;
+          line-height: 1 !important;
+        }
+      }
+
+      /* ensure classroom image top blends with white section above on small screens */
+      .classroom-top-fade {
+        background: linear-gradient(
+          180deg,
+          rgba(255, 255, 255, 1) 0%,
+          rgba(255, 255, 255, 0) 70%
+        );
+        pointer-events: none;
+      }
+
+      /* keep reduce-motion friendly */
+      @media (prefers-reduced-motion: reduce) {
+        .reduce-motion {
+          transition: none !important;
+          transform: none !important;
         }
       }
     </style>
   </head>
-  <body class="bg-[#F8F3EF] text-slate-900">
+
+  <body class="bg-[#F8F3EF] text-slate-900 antialiased">
     <div
-      style="
-        background-image: url('/assets/images/hero.jpg');
-        background-size: cover;
-        background-position: center;
-      "
+      class="relative bg-cover bg-center"
+      style="background-image: url('/assets/images/hero.jpg')"
     >
-      <!-- Top Navigation -->
       <!-- HEADER -->
-      <header
-        class="left-0 z-50 bg-transparent"
-        style="background: transparent"
-      >
+      <header class="absolute top-0 left-0 w-full z-50 bg-transparent">
+        <!-- container: mobile gets padding, laptop (lg+) resets padding to 0 -->
         <div
-          class="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between"
+          class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-0 py-4 lg:py-4 flex items-center justify-between"
         >
           <!-- Logo -->
           <div class="flex items-center gap-2">
-            <span class="text-white text-2xl font-semibold tracking-wide"
+            <span
+              class="text-white text-lg sm:text-2xl font-semibold tracking-wide"
               >Radiance Foundation</span
             >
           </div>
 
-          <!-- Navigation -->
+          <!-- Desktop nav (hidden on small) -->
           <nav
-            class="hidden md:flex items-center space-x-7 text-white text-[17px] font-medium"
+            class="hidden md:flex items-center space-x-6 text-white text-[17px] font-medium"
           >
             <a href="#" class="hover:text-yellow-300 transition">Home</a>
             <a href="#" class="hover:text-yellow-300 transition">About</a>
@@ -72,9 +87,10 @@
             <a href="#" class="hover:text-yellow-300 transition">Contact</a>
           </nav>
 
-          <!-- Phone & Button -->
+          <!-- Phone & CTA (desktop only) -->
           <div class="hidden md:flex items-center gap-6">
-            <div class="flex items-center gap-2 text-white text-[17px]">
+            <div class="flex items-center gap-2 text-white text-[15px]">
+              <!-- icon -->
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 fill="none"
@@ -94,39 +110,84 @@
 
             <a
               href="#"
-              class="bg-[#f0c44c] hover:bg-[#e7b53b] transition text-black font-semibold px-6 py-3 rounded-full text-[17px]"
+              class="bg-[#f0c44c] hover:bg-[#e7b53b] transition text-black font-semibold px-4 sm:px-6 py-2 sm:py-3 rounded-full text-[15px]"
+              >Donate Now</a
             >
-              Donate Now
-            </a>
           </div>
 
-          <!-- Mobile Menu Button -->
-          <button class="md:hidden text-white text-3xl">&#9776;</button>
+          <!-- Mobile hamburger -->
+          <button
+            id="mobileBtn"
+            class="md:hidden text-white text-2xl p-2"
+            aria-expanded="false"
+            aria-controls="mobileMenu"
+          >
+            &#9776;
+          </button>
         </div>
 
-        <!-- Divider Line -->
-        <div class="w-full border-t border-white/30"></div>
+        <!-- subtle dividing line between header and hero, very translucent -->
+        <div
+          class="w-full border-b"
+          style="border-color: rgba(255, 255, 255, 0.08)"
+        ></div>
+
+        <!-- MOBILE MENU (kept but with explicit transparent background) -->
+        <div id="mobileMenu" class="hidden md:hidden px-4 pb-4">
+          <nav class="bg-transparent p-2 rounded">
+            <ul class="space-y-2 text-white">
+              <li>
+                <a href="#" class="block px-2 py-2 rounded hover:bg-white/5"
+                  >Home</a
+                >
+              </li>
+              <li>
+                <a href="#" class="block px-2 py-2 rounded hover:bg-white/5"
+                  >About</a
+                >
+              </li>
+              <li>
+                <a href="#" class="block px-2 py-2 rounded hover:bg-white/5"
+                  >Causes</a
+                >
+              </li>
+              <li>
+                <a href="#" class="block px-2 py-2 rounded hover:bg-white/5"
+                  >Blog</a
+                >
+              </li>
+              <li>
+                <a href="#" class="block px-2 py-2 rounded hover:bg-white/5"
+                  >Team</a
+                >
+              </li>
+              <li>
+                <a href="#" class="block px-2 py-2 rounded hover:bg-white/5"
+                  >Contact</a
+                >
+              </li>
+            </ul>
+          </nav>
+        </div>
       </header>
 
       <!-- HERO -->
       <section
         id="hero"
-        class="relative h-[120vh] w-full overflow-hidden flex items-center"
-        style="background: transparent"
+        class="relative w-full overflow-hidden flex items-center h-[95vh] sm:h-[100vh] lg:h-[120vh]"
+        aria-label="Main hero"
       >
-        <!-- dark desaturating overlay -->
+        <!-- overlay -->
         <div class="absolute inset-0 bg-black/40 grayscale"></div>
 
-        <!-- content -->
         <div class="relative z-20 w-full max-w-7xl mx-auto px-6">
           <div class="max-w-5xl mx-auto text-center">
-            <!-- First (big) line -->
             <h1
-              class="text-white font-medium leading-[0.9] md:leading-[0.9] text-[56px] sm:text-[72px] md:text-[120px] lg:text-[140px] tracking-tight"
+              class="text-white font-medium tracking-tight leading-[0.9] text-[clamp(44px,6.6vw,140px)]"
             >
               Get
               <span class="inline-block relative ml-3">
-                <!-- paint stroke behind the word -->
+                <!-- paint stroke -->
                 <svg
                   class="absolute left-0 top-1/2 -translate-y-1/2 -z-10"
                   width="110%"
@@ -136,36 +197,32 @@
                   aria-hidden="true"
                   style="transform-origin: left center"
                 >
-                  <!-- irregular paint-like rectangle -->
                   <path
                     d="M0 2 C10 1 20 2 30 1 C40 0 50 1 60 1.6 C70 2 80 1 90 1 C100 1 110 2 110 2 L110 9 L0 9 Z"
                     fill="#7ED3B5"
                   />
                 </svg>
 
-                <!-- the highlighted word -->
                 <span class="relative inline-block pl-2 pr-2">loud</span>
               </span>
             </h1>
 
-            <!-- Second (huge) line -->
             <h2
-              class="mt-6 text-white font-medium leading-[0.95] text-[56px] sm:text-[68px] md:text-[96px] lg:text-[120px] tracking-tight"
+              class="mt-6 text-white font-medium leading-[0.95] text-[clamp(28px,4.4vw,120px)] tracking-tight"
             >
               Rise your voice today
             </h2>
 
-            <!-- CTA -->
-            <div class="mt-12 flex justify-center">
+            <div class="mt-10 flex justify-center">
               <a
                 href="#donate"
-                class="inline-flex items-center gap-4 bg-[#f0c44c] hover:bg-[#e7b53b] text-black font-semibold px-8 py-4 rounded-full shadow-xl text-lg"
+                class="inline-flex items-center gap-3 bg-[#f0c44c] hover:bg-[#e7b53b] text-black font-semibold px-6 py-3 rounded-full shadow-xl text-base sm:text-lg"
                 style="box-shadow: 0 18px 30px rgba(0, 0, 0, 0.25)"
               >
                 <span>Start Donating Now</span>
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
-                  class="w-5 h-5"
+                  class="w-4 h-4"
                   viewBox="0 0 24 24"
                   fill="none"
                   stroke="currentColor"
@@ -182,45 +239,37 @@
           </div>
         </div>
 
-        <!-- subtle bottom fade to blend into page -->
         <div
           class="absolute bottom-0 left-0 w-full h-24 bg-gradient-to-t from-black/50 to-transparent pointer-events-none"
         ></div>
       </section>
     </div>
 
-    <!-- Categories / Quick Links -->
+    <!-- Categories / Quick Links - responsive grid but identical visual -->
     <section class="-mt-16">
-      <div class="mx-auto px-16">
-        <!-- cards row (overlaps hero) -->
-        <div class="flex flex-row items-center justify-center gap-6">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
           <!-- Card 1 -->
           <article
-            class="bg-white h-full w-full rounded-lg p-10 relative overflow-visible flex flex-col items-center text-center"
+            class="bg-white rounded-2xl p-10 relative overflow-visible flex flex-col items-center text-center"
           >
-            <!-- Icon -->
             <div class="w-20 h-20 mb-6 flex items-center justify-center">
-              <!-- use your SVG or IMG here; placeholder emoji kept for quick preview -->
               <img
                 src="/assets/icons/healthy_food.svg"
                 alt=""
                 class="w-16 h-16"
               />
             </div>
-
-            <!-- Title -->
             <h3 class="text-2xl font-extrabold text-[#0b1020]">Healthy Food</h3>
-
-            <!-- colored bottom accent -->
             <span
-              class="absolute left-0 right-0 bottom-0 h-1 rounded-full"
+              class="absolute left-4 right-4 bottom-0 h-1.5 rounded-full"
               style="background: #ef6b68"
             ></span>
           </article>
 
           <!-- Card 2 -->
           <article
-            class="bg-white h-full w-full rounded-lg p-10 relative overflow-visible flex flex-col items-center text-center"
+            class="bg-white rounded-2xl p-10 relative overflow-visible flex flex-col items-center text-center"
           >
             <div class="w-20 h-20 mb-6 flex items-center justify-center">
               <img
@@ -229,34 +278,30 @@
                 class="w-16 h-16"
               />
             </div>
-
             <h3 class="text-2xl font-extrabold text-[#0b1020]">Clean Water</h3>
-
             <span
-              class="absolute left-0 right-0 bottom-0 h-1 rounded-full"
+              class="absolute left-4 right-4 bottom-0 h-1.5 rounded-full"
               style="background: #6ed6c2"
             ></span>
           </article>
 
           <!-- Card 3 -->
           <article
-            class="bg-white h-full w-full rounded-lg p-10 relative overflow-visible flex flex-col items-center text-center"
+            class="bg-white rounded-2xl p-10 relative overflow-visible flex flex-col items-center text-center"
           >
             <div class="w-20 h-20 mb-6 flex items-center justify-center">
               <img src="/assets/icons/education.svg" alt="" class="w-16 h-16" />
             </div>
-
             <h3 class="text-2xl font-extrabold text-[#0b1020]">Education</h3>
-
             <span
-              class="absolute left-0 right-0 bottom-0 h-1 rounded-full"
+              class="absolute left-4 right-4 bottom-0 h-1.5 rounded-full"
               style="background: #f2d24a"
             ></span>
           </article>
 
           <!-- Card 4 -->
           <article
-            class="bg-white h-full w-full rounded-lg p-10 relative overflow-visible flex flex-col items-center text-center"
+            class="bg-white rounded-2xl p-10 relative overflow-visible flex flex-col items-center text-center"
           >
             <div class="w-20 h-20 mb-6 flex items-center justify-center">
               <img
@@ -265,11 +310,9 @@
                 class="w-16 h-16"
               />
             </div>
-
             <h3 class="text-2xl font-extrabold text-[#0b1020]">Medical Care</h3>
-
             <span
-              class="absolute left-0 right-0 bottom-0 h-1 rounded-full"
+              class="absolute left-4 right-4 bottom-0 h-1.5 rounded-full"
               style="background: #a06bff"
             ></span>
           </article>
@@ -277,60 +320,47 @@
       </div>
     </section>
 
-    <!-- HERO FOLLOW-UP / TWO-COLUMN INFO + IMAGE -->
-    <section class="mt-12">
-      <div class="flex flex-row items-center justify-center p-24">
-        <div class="h-full w-full">
-          <h2
-            class="font-poppins font-semibold text-[#0c0f24] text-[64px] leading-1 tracking-[-0.01em]"
-          >
-            Help us to end <br />
-            poverty for good <br />
-            start with a child.
-          </h2>
-        </div>
-        <div class="h-full w-full">
-          <p
-            class="font-poppins font-normal text-[#0c0f24] text-[22px] leading-relaxed"
-          >
-            Growing up in poverty, children face tough challenges: hunger and
-            malnutrition, limited access to education and medical services,
-            social policy and isolation. we can end poverty for good.
-          </p>
-
-          <div class="mt-10 flex items-center gap-8">
-            <a
-              href="#donate"
-              class="inline-flex items-center gap-4 bg-[#f0c44c] hover:bg-[#e7b53b] text-black font-semibold px-7 py-4 rounded-full shadow-md"
-              style="box-shadow: 0 12px 20px rgba(0, 0, 0, 0.12)"
+    <!-- HERO FOLLOW-UP / TWO-COLUMN INFO - keep layout but responsive -->
+    <section class="mt-12 lg:h-[80vh]">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-10 items-center py-12">
+          <div>
+            <h2
+              class="font-poppins font-semibold text-[#0c0f24] text-[clamp(28px,6vw,64px)] leading-tight"
             >
-              <span>Start Donating Now</span>
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                class="w-4 h-4"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="1.6"
+              Help us to end <br />
+              poverty for good <br />
+              start with a child.
+            </h2>
+          </div>
+          <div>
+            <p
+              class="font-poppins font-normal text-[#0c0f24] text-[clamp(16px,2.2vw,22px)] leading-relaxed"
+            >
+              Growing up in poverty, children face tough challenges: hunger and
+              malnutrition, limited access to education and medical services,
+              social policy and isolation. we can end poverty for good.
+            </p>
+
+            <div class="mt-8 flex items-center gap-6">
+              <a
+                href="#donate"
+                class="inline-flex items-center gap-3 bg-[#f0c44c] hover:bg-[#e7b53b] text-black font-semibold px-5 py-3 rounded-full shadow-md"
+                style="box-shadow: 0 12px 20px rgba(0, 0, 0, 0.12)"
+                >Start Donating Now</a
               >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  d="M5 12h14M13 5l7 7-7 7"
-                />
-              </svg>
-            </a>
-
-            <a href="#about" class="text-[#0b1020] font-medium hover:underline"
-              >Read About Us</a
-            >
+              <a
+                href="#about"
+                class="text-[#0b1020] font-medium hover:underline"
+                >Read About Us</a
+              >
+            </div>
           </div>
         </div>
       </div>
-      <!-- decorative leaf (bottom-left) -->
+
       <img
-        class="pointer-events-none absolute -left-28 h-68 w-68"
-        height=""
+        class="pointer-events-none absolute -left-28 h-68 w-68 hidden md:block"
         src="/assets/icons/leaf.svg"
         alt="leaf"
         aria-hidden="true"
@@ -338,29 +368,29 @@
     </section>
 
     <!-- Video -->
-    <section class="mt-48 p-12">
+    <section class="mt-12 px-4 sm:px-6 lg:px-8">
       <img
         src="/assets/images/kids.avif"
-        class="h-100 w-100 rounded-xl border"
+        class="w-full rounded-xl border object-cover"
         alt=""
       />
     </section>
 
     <!-- Stats -->
     <section class="mt-20 bg-[#f9f6f4]">
-      <div class="mx-auto px-6">
-        <div class="grid grid-cols-2 md:grid-cols-4 gap-10 text-center py-16">
-          <!-- Card 1 -->
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
           <div class="relative flex flex-col items-center justify-center">
             <img
               src="/assets/images/pink_patch.avif"
               alt="Pink patch"
-              class="w-40 h-40 object-contain select-none pointer-events-none"
+              class="w-28 h-28 md:w-40 md:h-40 object-contain select-none pointer-events-none"
             />
             <div
               class="absolute inset-0 flex flex-col items-center justify-center"
             >
-              <span class="text-[48px] font-bold text-[#0b0b0b] leading-none"
+              <span
+                class="text-[clamp(26px,4vw,48px)] font-bold text-[#0b0b0b] leading-none"
                 >20<b>billion</b></span
               >
               <span class="mt-3 text-[#0c0f24] text-[16px] font-medium"
@@ -369,17 +399,17 @@
             </div>
           </div>
 
-          <!-- Card 2 -->
           <div class="relative flex flex-col items-center justify-center">
             <img
               src="/assets/images/blue_patch.avif"
               alt="Blue patch"
-              class="w-40 h-40 object-contain select-none pointer-events-none"
+              class="w-28 h-28 md:w-40 md:h-40 object-contain select-none pointer-events-none"
             />
             <div
               class="absolute inset-0 flex flex-col items-center justify-center"
             >
-              <span class="text-[48px] font-bold text-[#0b0b0b] leading-none"
+              <span
+                class="text-[clamp(26px,4vw,48px)] font-bold text-[#0b0b0b] leading-none"
                 >123</span
               >
               <span class="mt-3 text-[#0c0f24] text-[16px] font-medium"
@@ -388,17 +418,17 @@
             </div>
           </div>
 
-          <!-- Card 3 -->
           <div class="relative flex flex-col items-center justify-center">
             <img
               src="/assets/images/yellow_patch.avif"
               alt="Yellow patch"
-              class="w-40 h-40 object-contain select-none pointer-events-none"
+              class="w-28 h-28 md:w-40 md:h-40 object-contain select-none pointer-events-none"
             />
             <div
               class="absolute inset-0 flex flex-col items-center justify-center"
             >
-              <span class="text-[48px] font-bold text-[#0b0b0b] leading-none"
+              <span
+                class="text-[clamp(26px,4vw,48px)] font-bold text-[#0b0b0b] leading-none"
                 >30k+</span
               >
               <span class="mt-3 text-[#0c0f24] text-[16px] font-medium"
@@ -407,17 +437,17 @@
             </div>
           </div>
 
-          <!-- Card 4 -->
           <div class="relative flex flex-col items-center justify-center">
             <img
               src="/assets/images/purple_patch.avif"
               alt="Purple patch"
-              class="w-40 h-40 object-contain select-none pointer-events-none"
+              class="w-28 h-28 md:w-40 md:h-40 object-contain select-none pointer-events-none"
             />
             <div
               class="absolute inset-0 flex flex-col items-center justify-center"
             >
-              <span class="text-[48px] font-bold text-[#0b0b0b] leading-none"
+              <span
+                class="text-[clamp(26px,4vw,48px)] font-bold text-[#0b0b0b] leading-none"
                 >218</span
               >
               <span class="mt-3 text-[#0c0f24] text-[16px] font-medium"
@@ -429,14 +459,16 @@
       </div>
     </section>
 
-    <!-- How it works / CTA strip -->
-    <section class="mt-16 bg-white py-12 w-full h-[100vh]">
-      <div class="mx-auto h-full px-6 grid lg:grid-cols-2 gap-8 items-center">
+    <!-- How it works -->
+    <section class="mt-16 bg-white py-12">
+      <div
+        class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid lg:grid-cols-2 gap-8 items-center"
+      >
         <div class="rounded-2xl overflow-hidden">
           <img
             src="/assets/images/howitworks.png"
             alt="how it works"
-            class="w-full h-[50vh] object-cover"
+            class="w-full h-[40vh] md:h-[50vh] object-cover"
           />
         </div>
         <div>
@@ -448,39 +480,34 @@
             programs. Join our volunteers and become a part of the change.
           </p>
           <div class="mt-6">
-            <a class="bg-yellow-400 px-5 py-3 rounded-full">Get Involved</a>
+            <a class="bg-yellow-400 px-5 py-3 rounded-full inline-block"
+              >Get Involved</a
+            >
           </div>
         </div>
       </div>
     </section>
 
-    <!-- Interactive 3-card CTA strip -->
-    <section>
-      <div class="mx-auto">
-        <div class="flex flex-row justify-between items-center">
-          <!-- Card (repeat for each) -->
+    <!-- Interactive 3-card CTA strip - responsive -->
+    <section class="mt-8">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 items-stretch">
+          <!-- card 1 -->
           <div
             class="group relative h-[420px] w-full overflow-hidden shadow-lg"
           >
-            <!-- background image -->
             <img
               src="/assets/images/teaching.webp"
               alt=""
-              class="absolute inset-0 w-full h-full object-cover transition-transform duration-700 ease-out transform group-hover:scale-105 group-focus:scale-105 grayscale"
+              class="absolute inset-0 w-full h-full object-cover transition-transform duration-700 ease-out transform group-hover:scale-105 grayscale"
             />
-
-            <!-- dark overlay to desaturate & dim the photo -->
             <div
               class="absolute inset-0 bg-black/55 mix-blend-multiply transition-opacity duration-500 group-hover:bg-black/40"
             ></div>
-
-            <!-- centered icon + title -->
             <div
-              class="relative z-10 h-full px-8 flex flex-col items-center justify-center text-center text-white"
+              class="relative z-10 h-full px-6 flex flex-col items-center justify-center text-center text-white"
             >
-              <!-- icon -->
               <div class="mb-6">
-                <!-- swap with your icon -->
                 <svg
                   width="56"
                   height="56"
@@ -495,34 +522,28 @@
                   <path d="M12 3v18M3 12h18"></path>
                 </svg>
               </div>
-
-              <!-- Title -->
               <h3 class="text-4xl font-semibold leading-tight tracking-tight">
                 Make Donation
               </h3>
-
-              <!-- plus button -->
               <button
                 aria-label="More about Make Donation"
-                class="mt-8 rounded-full bg-yellow-400 w-14 h-14 flex items-center justify-center text-black text-xl font-bold shadow-md transition-transform duration-300 hover:scale-105 focus:scale-105"
+                class="mt-8 rounded-full bg-yellow-400 w-14 h-14 flex items-center justify-center text-black text-xl font-bold shadow-md transition-transform duration-300 hover:scale-105"
               >
                 +
               </button>
             </div>
 
-            <!-- yellow panel revealed on hover/focus -->
+            <!-- yellow panel on hover -->
             <div
               class="absolute inset-0 z-20 flex items-center justify-center pointer-events-none"
-              aria-hidden="true"
             >
               <div
-                class="w-[82%] max-w-xl h-[86%] bg-[#f0c44c] rounded-lg opacity-0 transform scale-95 translate-y-6 transition-all duration-700 ease-out group-hover:opacity-100 group-hover:scale-100 group-hover:translate-y-0 group-focus:opacity-100 group-focus:scale-100 group-focus:translate-y-0 pointer-events-auto"
+                class="w-[82%] max-w-xl h-[86%] bg-[#f0c44c] rounded-lg opacity-0 transform scale-95 translate-y-6 transition-all duration-700 ease-out group-hover:opacity-100 group-hover:scale-100 group-hover:translate-y-0 pointer-events-auto"
                 style="box-shadow: 0 24px 40px rgba(0, 0, 0, 0.18)"
               >
                 <div
-                  class="h-full p-12 flex flex-col items-center justify-center text-center"
+                  class="h-full p-8 md:p-12 flex flex-col items-center justify-center text-center"
                 >
-                  <!-- white icon -->
                   <div class="mb-6">
                     <svg
                       width="48"
@@ -532,19 +553,14 @@
                       class="w-12 h-12 text-black"
                       stroke="black"
                       stroke-width="1.6"
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
                     >
                       <rect x="3" y="7" width="18" height="10" rx="1.5" />
                       <path d="M8 12h8" />
                     </svg>
                   </div>
-
-                  <!-- yellow panel title -->
                   <h4 class="text-4xl font-semibold text-[#0b1020]">
                     Fundrising
                   </h4>
-
                   <p
                     class="mt-6 text-lg text-[#0b1020] max-w-[520px] leading-relaxed"
                   >
@@ -555,7 +571,6 @@
               </div>
             </div>
 
-            <!-- make card keyboard-focusable -->
             <a
               href="#"
               class="absolute inset-0 z-30 focus:outline-none"
@@ -564,24 +579,22 @@
             ></a>
           </div>
 
-          <!-- Card 2 -->
+          <!-- card 2 -->
           <div
             class="group relative h-[420px] w-full overflow-hidden shadow-lg"
           >
             <img
               src="/assets/images/indian-village-women.avif"
               alt=""
-              class="absolute inset-0 w-full h-full object-cover transition-transform duration-700 ease-out transform group-hover:scale-105 group-focus:scale-105 grayscale"
+              class="absolute inset-0 w-full h-full object-cover transition-transform duration-700 ease-out transform group-hover:scale-105 grayscale"
             />
             <div
               class="absolute inset-0 bg-black/55 mix-blend-multiply transition-opacity duration-500 group-hover:bg-black/40"
             ></div>
-
             <div
-              class="relative z-10 h-full px-8 flex flex-col items-center justify-center text-center text-white"
+              class="relative z-10 h-full px-6 flex flex-col items-center justify-center text-center text-white"
             >
               <div class="mb-6">
-                <!-- icon -->
                 <svg
                   width="56"
                   height="56"
@@ -590,8 +603,6 @@
                   class="w-14 h-14"
                   stroke="white"
                   stroke-width="1.6"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
                 >
                   <path d="M12 2l2 4 4 .5-3 2 1 4-4-2-4 2 1-4-3-2L10 6z" />
                 </svg>
@@ -601,7 +612,7 @@
               </h3>
               <button
                 aria-label="More about Be a Volunteer"
-                class="mt-8 rounded-full bg-yellow-400 w-14 h-14 flex items-center justify-center text-black text-xl font-bold shadow-md transition-transform duration-300 hover:scale-105 focus:scale-105"
+                class="mt-8 rounded-full bg-yellow-400 w-14 h-14 flex items-center justify-center text-black text-xl font-bold shadow-md transition-transform duration-300 hover:scale-105"
               >
                 +
               </button>
@@ -611,11 +622,11 @@
               class="absolute inset-0 z-20 flex items-center justify-center pointer-events-none"
             >
               <div
-                class="w-[82%] max-w-xl h-[86%] bg-[#f0c44c] rounded-lg opacity-0 transform scale-95 translate-y-6 transition-all duration-700 ease-out group-hover:opacity-100 group-hover:scale-100 group-hover:translate-y-0 group-focus:opacity-100 group-focus:scale-100 group-focus:translate-y-0 pointer-events-auto"
+                class="w-[82%] max-w-xl h-[86%] bg-[#f0c44c] rounded-lg opacity-0 transform scale-95 translate-y-6 transition-all duration-700 ease-out group-hover:opacity-100 group-hover:scale-100 group-hover:translate-y-0 pointer-events-auto"
                 style="box-shadow: 0 24px 40px rgba(0, 0, 0, 0.18)"
               >
                 <div
-                  class="h-full p-12 flex flex-col items-center justify-center text-center"
+                  class="h-full p-8 md:p-12 flex flex-col items-center justify-center text-center"
                 >
                   <div class="mb-6">
                     <svg
@@ -626,8 +637,6 @@
                       class="w-12 h-12 text-black"
                       stroke="black"
                       stroke-width="1.6"
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
                     >
                       <path d="M12 2l5 9H7l5-9zM3 20h18v-2H3v2z" />
                     </svg>
@@ -652,24 +661,22 @@
             ></a>
           </div>
 
-          <!-- Card 3 -->
+          <!-- card 3 -->
           <div
             class="group relative h-[420px] w-full overflow-hidden shadow-lg"
           >
             <img
               src="/assets/images/women-kids.avif"
               alt=""
-              class="absolute inset-0 w-full h-full object-cover transition-transform duration-700 ease-out transform group-hover:scale-105 group-focus:scale-105 grayscale"
+              class="absolute inset-0 w-full h-full object-cover transition-transform duration-700 ease-out transform group-hover:scale-105 grayscale"
             />
             <div
               class="absolute inset-0 bg-black/55 mix-blend-multiply transition-opacity duration-500 group-hover:bg-black/40"
             ></div>
-
             <div
-              class="relative z-10 h-full px-8 flex flex-col items-center justify-center text-center text-white"
+              class="relative z-10 h-full px-6 flex flex-col items-center justify-center text-center text-white"
             >
               <div class="mb-6">
-                <!-- icon -->
                 <svg
                   width="56"
                   height="56"
@@ -678,10 +685,8 @@
                   class="w-14 h-14"
                   stroke="white"
                   stroke-width="1.6"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
                 >
-                  <path d="M4 7h16v10H4zM8 7v10"></path>
+                  <path d="M4 7h16v10H4zM8 7v10" />
                 </svg>
               </div>
               <h3 class="text-4xl font-semibold leading-tight tracking-tight">
@@ -689,7 +694,7 @@
               </h3>
               <button
                 aria-label="More about Fundraising"
-                class="mt-8 rounded-full bg-yellow-400 w-14 h-14 flex items-center justify-center text-black text-xl font-bold shadow-md transition-transform duration-300 hover:scale-105 focus:scale-105"
+                class="mt-8 rounded-full bg-yellow-400 w-14 h-14 flex items-center justify-center text-black text-xl font-bold shadow-md transition-transform duration-300 hover:scale-105"
               >
                 +
               </button>
@@ -699,11 +704,11 @@
               class="absolute inset-0 z-20 flex items-center justify-center pointer-events-none"
             >
               <div
-                class="w-[82%] max-w-xl h-[86%] bg-[#f0c44c] rounded-lg opacity-0 transform scale-95 translate-y-6 transition-all duration-700 ease-out group-hover:opacity-100 group-hover:scale-100 group-hover:translate-y-0 group-focus:opacity-100 group-focus:scale-100 group-focus:translate-y-0 pointer-events-auto"
+                class="w-[82%] max-w-xl h-[86%] bg-[#f0c44c] rounded-lg opacity-0 transform scale-95 translate-y-6 transition-all duration-700 ease-out group-hover:opacity-100 group-hover:scale-100 group-hover:translate-y-0 pointer-events-auto"
                 style="box-shadow: 0 24px 40px rgba(0, 0, 0, 0.18)"
               >
                 <div
-                  class="h-full p-12 flex flex-col items-center justify-center text-center"
+                  class="h-full p-8 md:p-12 flex flex-col items-center justify-center text-center"
                 >
                   <div class="mb-6">
                     <svg
@@ -714,10 +719,8 @@
                       class="w-12 h-12 text-black"
                       stroke="black"
                       stroke-width="1.6"
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
                     >
-                      <path d="M12 5v14M5 12h14"></path>
+                      <path d="M12 5v14M5 12h14" />
                     </svg>
                   </div>
                   <h4 class="text-4xl font-semibold text-[#0b1020]">
@@ -745,58 +748,45 @@
     </section>
 
     <!-- TEAM / VOLUNTEERS -->
-    <section class="relative bg-white w-full h-[110vh] overflow-hidden">
-      <!-- decorative brush in top-left (replace src) -->
+    <section
+      class="relative bg-white w-full h-auto md:h-[110vh] overflow-hidden"
+    >
       <img
         src="/assets/icons/brush.svg"
         alt=""
-        class="pointer-events-none select-none absolute -top-18 -left-20 w-40 md:w-48 opacity-90"
+        class="pointer-events-none select-none absolute -top-18 -left-20 w-40 md:w-48 opacity-90 hidden md:block"
       />
 
-      <div class="max-w-7xl mx-auto h-full px-6 flex flex-col justify-center">
-        <!-- heading + CTA row -->
-        <div class="flex items-start justify-between gap-6">
+      <div
+        class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 md:py-20 h-full flex flex-col justify-center"
+      >
+        <div
+          class="flex flex-col md:flex-row items-start justify-between gap-6"
+        >
           <h2
-            class="font-medium text-[#0b1020] leading-[0.96] tracking-[-0.01em] text-lg"
+            class="font-medium text-[#0b1020] leading-[0.96] tracking-[-0.01em] text-2xl md:text-[28px]"
           >
             Our dedicated<br />volunteer.
           </h2>
 
           <a
             href="#donate"
-            class="shrink-0 inline-flex items-center gap-3 bg-[#f0c44c] hover:bg-[#e7b53b] text-black font-semibold px-6 py-4 rounded-full"
+            class="shrink-0 inline-flex items-center gap-3 bg-[#f0c44c] hover:bg-[#e7b53b] text-black font-semibold px-4 py-3 rounded-full"
             style="box-shadow: 0 12px 20px rgba(0, 0, 0, 0.12)"
+            >Start Donating Now</a
           >
-            Start Donating Now
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              class="w-4 h-4"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="1.6"
-            >
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="rond"
-                d="M5 12h14M13 5l7 7-7 7"
-              />
-            </svg>
-          </a>
         </div>
 
-        <!-- cards -->
         <div class="mt-12 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
-          <!-- card -->
           <article
             class="rounded-[18px] border border-slate-200/70 bg-white overflow-hidden shadow-[0_8px_24px_rgba(16,24,40,.06)]"
           >
             <img
               src="/assets/images/volenteer.avif"
               alt="Anthony Malone"
-              class="w-full h-64 object-cover"
+              class="w-full h-56 md:h-64 object-cover"
             />
-            <div class="px-8 py-6 text-center">
+            <div class="px-6 py-6 text-center">
               <h3 class="text-[20px] font-semibold text-[#0b1020]">
                 Anthony Malone
               </h3>
@@ -810,9 +800,9 @@
             <img
               src="/assets/images/volenteer.avif"
               alt="Joel Woods"
-              class="w-full h-64 object-cover"
+              class="w-full h-56 md:h-64 object-cover"
             />
-            <div class="px-8 py-6 text-center">
+            <div class="px-6 py-6 text-center">
               <h3 class="text-[20px] font-semibold text-[#0b1020]">
                 Joel Woods
               </h3>
@@ -826,9 +816,9 @@
             <img
               src="/assets/images/volenteer.avif"
               alt="Glenn Ruiz"
-              class="w-full h-64 object-cover"
+              class="w-full h-56 md:h-64 object-cover"
             />
-            <div class="px-8 py-6 text-center">
+            <div class="px-6 py-6 text-center">
               <h3 class="text-[20px] font-semibold text-[#0b1020]">
                 Glenn Ruiz
               </h3>
@@ -842,9 +832,9 @@
             <img
               src="/assets/images/volenteer.avif"
               alt="Edgar Torrey"
-              class="w-full h-64 object-cover"
+              class="w-full h-56 md:h-64 object-cover"
             />
-            <div class="px-8 py-6 text-center">
+            <div class="px-6 py-6 text-center">
               <h3 class="text-[20px] font-semibold text-[#0b1020]">
                 Edgar Torrey
               </h3>
@@ -853,36 +843,30 @@
           </article>
         </div>
 
-        <!-- bottom spacing to breathe like the design -->
-        <div class="h-10"></div>
+        <div class="h-8 md:h-10"></div>
       </div>
     </section>
 
+    <!-- classroom image with top fade -->
     <section class="relative w-full overflow-hidden">
       <img
         src="./assets/images/classroom.png"
         alt="classroom"
-        class="h-full w-full object-cover"
+        class="w-full h-[40vh] md:h-[55vh] lg:h-[70vh] object-cover"
       />
-
-      <!-- White gradient overlay on top -->
-      <div
-        class="absolute top-0 left-0 w-full h-[10%] bg-gradient-to-b from-white to-transparent pointer-events-none"
-      ></div>
+      <div class="absolute top-0 left-0 w-full h-20 classroom-top-fade"></div>
     </section>
 
     <!-- FOOTER -->
     <footer class="bg-black text-white">
       <div
-        class="max-w-7xl mx-auto px-6 py-20 grid grid-cols-1 md:grid-cols-4 gap-12"
+        class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 md:py-20 grid grid-cols-1 md:grid-cols-4 gap-8"
       >
-        <!-- Brand + blurb + socials -->
         <div>
           <div class="flex items-center gap-3">
             <div
               class="w-9 h-9 rounded-full bg-[#F0C44C] flex items-center justify-center"
             >
-              <!-- leaf icon -->
               <svg
                 viewBox="0 0 24 24"
                 class="w-5 h-5 text-black"
@@ -894,7 +878,9 @@
                 />
               </svg>
             </div>
-            <span class="text-2xl font-semibold tracking-wide">Radiance Foundation</span>
+            <span class="text-2xl font-semibold tracking-wide"
+              >Radiance Foundation</span
+            >
           </div>
 
           <p class="mt-6 text-[18px] leading-8 text-white/80 max-w-xs">
@@ -902,58 +888,26 @@
           </p>
 
           <div class="mt-8 flex items-center gap-4">
-            <!-- social buttons -->
             <a
               href="#"
               class="w-11 h-11 rounded-[12px] border border-white/25 flex items-center justify-center hover:bg-white/10 transition"
+              >F</a
             >
-              <svg
-                class="w-5 h-5"
-                viewBox="0 0 24 24"
-                fill="currentColor"
-                aria-hidden="true"
-              >
-                <path
-                  d="M22 12.06C22 6.48 17.52 2 11.94 2 6.36 2 1.88 6.48 1.88 12.06c0 4.99 3.66 9.13 8.45 9.93v-7.03H7.9V12.1h2.43V9.95c0-2.4 1.43-3.73 3.61-3.73 1.05 0 2.16.19 2.16.19v2.38h-1.22c-1.2 0-1.58.74-1.58 1.5v1.81h2.69l-.43 2.86h-2.26v7.03c4.79-.8 8.45-4.94 8.45-9.93Z"
-                />
-              </svg>
-            </a>
             <a
               href="#"
               class="w-11 h-11 rounded-[12px] border border-white/25 flex items-center justify-center hover:bg-white/10 transition"
+              >I</a
             >
-              <svg
-                class="w-5 h-5"
-                viewBox="0 0 24 24"
-                fill="currentColor"
-                aria-hidden="true"
-              >
-                <path
-                  d="M7 2C4.24 2 2 4.24 2 7v10c0 2.76 2.24 5 5 5h10c2.76 0 5-2.24 5-5V7c0-2.76-2.24-5-5-5H7Zm10 2a3 3 0 0 1 3 3v10a3 3 0 0 1-3 3H7a3 3 0 0 1-3-3V7a3 3 0 0 1 3-3h10Zm-5 3.7a4.3 4.3 0 1 0 0 8.6 4.3 4.3 0 0 0 0-8.6Zm0 2a2.3 2.3 0 1 1 0 4.6 2.3 2.3 0 0 1 0-4.6ZM18.4 6.6a.9.9 0 1 0 0 1.8.9.9 0 0 0 0-1.8Z"
-                />
-              </svg>
-            </a>
             <a
               href="#"
               class="w-11 h-11 rounded-[12px] border border-white/25 flex items-center justify-center hover:bg-white/10 transition"
+              >P</a
             >
-              <svg
-                class="w-5 h-5"
-                viewBox="0 0 24 24"
-                fill="currentColor"
-                aria-hidden="true"
-              >
-                <path
-                  d="M12.2 2C7.2 2 4 5.5 4 9c0 2 .8 3.8 2.7 4.5.3.1.6 0 .7-.3l.6-2c.1-.3 0-.4-.2-.7-.5-.6-.8-1.4-.8-2.2 0-2.1 1.6-3.9 4.2-3.9 2.3 0 3.6 1.3 3.6 3.1 0 2.5-1.1 4.6-2.7 4.6-.9 0-1.6-.7-1.4-1.7.3-1.1.8-2.2.8-3.1 0-.7-.4-1.3-1.2-1.3-1 0-1.8 1.1-1.8 2.5 0 .9.3 1.6.3 1.6s-1 4.2-1.2 5c-.3 1.3-.1 3 .1 4.2.1.2.2.3.3.2 1.6-.9 2.1-3 2.1-4.4 0-.5.1-1 .3-1.5.3 1 .9 1.7 2.1 1.7 3.1 0 5.2-2.9 5.2-6.7C17.7 4.7 15.4 2 12.2 2Z"
-                />
-              </svg>
-            </a>
           </div>
 
           <p class="mt-12 text-sm text-white/70">© 2002 - 2023 FramerBite.</p>
         </div>
 
-        <!-- Solution -->
         <div>
           <h4 class="text-xl font-semibold">Solution</h4>
           <ul class="mt-6 space-y-5 text-white/70 text-[18px]">
@@ -969,7 +923,6 @@
           </ul>
         </div>
 
-        <!-- Products -->
         <div>
           <h4 class="text-xl font-semibold">Products</h4>
           <ul class="mt-6 space-y-5 text-white/70 text-[18px]">
@@ -981,33 +934,27 @@
           </ul>
         </div>
 
-        <!-- Address -->
         <div>
           <h4 class="text-xl font-semibold">Our Address</h4>
           <p class="mt-6 text-white/70 text-[18px] leading-8 max-w-sm">
             2190 Mirpur terrace, Equalui<br />Licens in 23 states.
           </p>
-
           <a
             href="mailto:januinc@company.com"
-            class="block mt-6 text-[20px] font-semibold hover:underline underline-offset-4"
+            class="block mt-6 text-[20px] font-semibold hover:underline"
+            >januinc@company.com</a
           >
-            januinc@company.com
-          </a>
-
           <a
             href="tel:+17576994478"
             class="block mt-4 text-[24px] font-semibold"
+            >+757 699-4478</a
           >
-            +757 699-4478
-          </a>
         </div>
       </div>
 
-      <!-- bottom small nav -->
       <div class="border-t border-white/10">
         <div
-          class="max-w-7xl mx-auto px-6 py-8 flex flex-col md:flex-row items-center justify-end gap-8 text-[18px]"
+          class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 flex flex-col md:flex-row items-center justify-end gap-6 text-[18px]"
         >
           <a href="#" class="text-white hover:opacity-100 opacity-90">About</a>
           <a href="#" class="text-white hover:opacity-100 opacity-90">Blog</a>
@@ -1022,12 +969,25 @@
       </div>
     </footer>
 
-    <!-- optional small script for interactivity -->
     <script>
-      // simple placeholder JS for demo behaviour
-      document.querySelectorAll("[data-toggle-menu]").forEach((el) => {
-        el.addEventListener("click", () => {
-          document.querySelector("nav").classList.toggle("hidden");
+      // Mobile menu toggle (keeps original structure)
+      const btn = document.getElementById("mobileBtn");
+      const mobile = document.getElementById("mobileMenu");
+      if (btn && mobile) {
+        btn.addEventListener("click", () => {
+          const isOpen = btn.getAttribute("aria-expanded") === "true";
+          btn.setAttribute("aria-expanded", (!isOpen).toString());
+          mobile.classList.toggle("hidden");
+        });
+      }
+
+      // keyboard support for card anchors
+      document.querySelectorAll("a[tabindex]").forEach((a) => {
+        a.addEventListener("keydown", (e) => {
+          if (e.key === "Enter" || e.key === " ") {
+            e.preventDefault();
+            a.click();
+          }
         });
       });
     </script>
